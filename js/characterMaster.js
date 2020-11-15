@@ -48,5 +48,5 @@ const characterMaster = [
     { "id": "46", "name": "E261 サフィールちゃん", "color": "#006787", "sound": "regular" },
     { "id": "47", "name": "E956 アルファXマン", "color": "#2f4663", "sound": "shinkansen" },
     { "id": "48", "name": "E257 おどりこちゃん", "color": "#1c96d2", "sound": "express" },
-    { "id": "49", "name": "E231 むさいしのくん", "color": "#e36028", "sound": "regular" }
+    { "id": "49", "name": "E231 むさしのくん", "color": "#e36028", "sound": "regular" }
 ];
