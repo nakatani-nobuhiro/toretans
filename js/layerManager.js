@@ -1,7 +1,8 @@
 /**
- * Screen
+ * The manager of the layers.
+ * レイヤーのマネジャー
  */
-export class Screen {
+export class LayerManager {
     constructor(div) {
         this.div = div;
         this.layers = [];
@@ -15,7 +16,8 @@ export class Screen {
             const rect = this.div.getBoundingClientRect();
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
-            for (const layer of this.layers.reverse()) {
+            const layersReversed = this.layers.slice();
+            for (const layer of layersReversed.reverse()) {
                 if (layer.onClick(x, y) === true) {
                     break;
                 }
@@ -31,7 +33,7 @@ export class Screen {
     removeAllLayers() {
         this.layers = [];
         while (this.div.firstChild) {
-            this.div.firstChild.removeChild(this.div.firstChild);
+            this.div.removeChild(this.div.firstChild);
         }
     }
     resize() {
@@ -39,12 +41,9 @@ export class Screen {
             layer.resize(window.innerWidth, window.innerHeight);
         }
     }
-    run() {
-        this.animation.start();
-    }
 }
 /**
- * Animation Class
+ * Animation
  */
 class Animation {
     constructor(fps = 60) {

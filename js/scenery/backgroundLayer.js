@@ -1,4 +1,4 @@
-import { CanvasLayer } from "./layer.js";
+import { CanvasLayer } from "../layer.js";
 /**
  * Basic Background Layer Class
  * Simple blue screen.

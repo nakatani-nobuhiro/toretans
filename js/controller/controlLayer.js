@@ -1,35 +1,24 @@
-export { ControlLayer };
-import { CanvasLayer } from "./layer.js";
-/*
- * Control Layer Class
- * this layer should be at the top of layers.
+import { CanvasLayer } from "../layer.js";
+/**
+ * Control Panel Layer Class
+ * コントロール・パネル・レイヤー
  */
-class ControlLayer extends CanvasLayer {
+export class ControlPanelLayer extends CanvasLayer {
     constructor() {
         super();
-        this.observerLayers = [];
-        this.refreshButton = new RefreshButton(this.canvas);
-        this.displayNameButton = new DisplayNameButton(this.canvas);
-        this.selectSceneryButton = new SelectSceneryButton(this.canvas);
+        this.characterChangingButton = new CharacterChangingButton(this.canvas);
+        this.characterNameButton = new CharacterNameButton(this.canvas);
+        this.scenerySelectionButton = new ScenerySelectionButton(this.canvas);
         this.icons = [];
-        this.icons.push(this.refreshButton);
-        this.icons.push(this.displayNameButton);
-        this.icons.push(this.selectSceneryButton);
-        this.canvas.addEventListener("click", (event) => {
-            const rect = this.canvas.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            for (const layer of this.observerLayers) {
-                if (layer.onClick(x, y) === true) {
-                    break;
-                }
-            }
-        }, false);
+        this.icons.push(this.characterChangingButton);
+        this.icons.push(this.characterNameButton);
+        this.icons.push(this.scenerySelectionButton);
     }
     resize(width, height) {
         super.resize(width, height);
         const iconsize = Math.floor(Math.min(height / 10, width / 5));
-        // Control Panel
+        // Draw the base of the control panel
+        // コントロール・パネルの背景描画
         const context = this.canvas.getContext("2d");
         const dpr = window.devicePixelRatio;
         const r = 10 * dpr;
@@ -42,7 +31,8 @@ class ControlLayer extends CanvasLayer {
         context.lineTo(0, this.canvas.height);
         context.closePath();
         context.fill();
-        // Icons
+        // Put the icons
+        // アイコンの設置
         this.icons.forEach((icon, i) => {
             icon.x = (this.canvas.width - this.icons.length * iconsize) / 2 + iconsize * i;
             icon.y = this.canvas.height - iconsize;
@@ -61,12 +51,23 @@ class ControlLayer extends CanvasLayer {
     update(milliseconds) {
     }
 }
+/**
+ * Abstract Class of Control Button
+ * コントロール・ボタンの抽象クラス
+ */
 class ControlButton {
     constructor(canvas) {
         this.canvas = canvas;
-        this.observerLayers = [];
+        this.observers = [];
         this.image = new Image();
+        this.sound = null;
         this.image.onload = this.draw.bind(this);
+    }
+    func() {
+        if (this.sound != null) {
+            this.sound.play();
+        }
+        this.observers.forEach((observer) => { observer.update(); });
     }
     draw() {
         const context = this.canvas.getContext("2d");
@@ -91,47 +92,37 @@ class ControlButton {
         }
     }
 }
-class RefreshButton extends ControlButton {
+/**
+ * Character Changing Button Class
+ * キャラクター入替ボタン・クラス
+ */
+class CharacterChangingButton extends ControlButton {
     constructor(canvas) {
         super(canvas);
-        this.sound = new Audio("audio/control/refresh.mp3");
         this.title = 'いれかえ';
+        this.sound = new Audio("audio/control/refresh.mp3");
         this.image.src = "img/control/icon-refresh.svg";
     }
-    func() {
-        this.sound.play();
-        for (const layer of this.observerLayers) {
-            layer.refresh();
-        }
-    }
 }
-class DisplayNameButton extends ControlButton {
+/**
+ * Character Name Button Class
+ * キャラクター名ボタン・クラス
+ */
+class CharacterNameButton extends ControlButton {
     constructor(canvas) {
         super(canvas);
         this.title = 'なまえ';
         this.image.src = "img/control/icon-tag.svg";
     }
-    func() {
-        for (const layer of this.observerLayers) {
-            layer.characterNameVisible = !layer.characterNameVisible;
-        }
-    }
 }
-class SelectSceneryButton extends ControlButton {
+/**
+ * Scenery Selection Button Class
+ * シーナリー選択ボタン・クラス
+ */
+class ScenerySelectionButton extends ControlButton {
     constructor(canvas) {
         super(canvas);
         this.title = 'はいけい';
         this.image.src = "img/control/icon-image.svg";
     }
-    func() {
-        alert("click");
-        //            const scenerySelection:  ScenerySelectionLayer = new ScenerySelectionLayer();
-    }
-}
-class ScenerySelectionLayer extends CanvasLayer {
-    constructor() {
-        super();
-        this.canvas.style.backgroundColor = "#ffffff";
-    }
-    update(milliseconds) { }
 }

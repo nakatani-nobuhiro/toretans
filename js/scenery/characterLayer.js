@@ -1,6 +1,6 @@
 export { CharacterLayer };
-import { CanvasLayer } from "./layer.js";
-import { characterMaster } from "./characterMaster.js";
+import { CanvasLayer } from "../layer.js";
+import { characterMaster } from "../characterMaster.js";
 class CharacterLayer extends CanvasLayer {
     constructor() {
         super();
