@@ -12,10 +12,12 @@
 <body>
     <div id="root"></div>
     <script type="module">
-        import {Screen} from "./js/screen.js";
+        import {LayerManager} from "./js/layerManager.js";
+        import {Controller} from "./js/controller/controller.js";
 
-        const screen = new Screen(document.getElementById("root"));
-        screen.run();
+        const layerManager = new LayerManager(document.getElementById("root"));
+        const controller = new Controller(layerManager);
+        layerManager.animation.start();
     </script>
 </body>
 
