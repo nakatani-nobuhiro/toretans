@@ -23,7 +23,27 @@ export class Scenery {
 export class DefaultSceneryBuilder {
     constructor() { }
     build() {
-        return new BasicSceneryBuilder().build();
+        const date = new Date();
+        switch (date.getMonth() + 1) {
+            case 12:
+            case 1:
+            case 2:
+                return new SnowSceneryBuilder().build();
+            case 4:
+                return new SpringSceneryBuilder().build();
+            case 6:
+                return new RainSceneryBuilder().build();
+            case 7:
+            case 8:
+                return new WaveSceneryBuilder().build();
+            case 9:
+                return new MoonnightSceneryBuilder().build();
+            case 10:
+            case 11:
+                return new FallingLeavesSceneryBuilder().build();
+            default:
+                return new BasicSceneryBuilder().build();
+        }
     }
 }
 /**
