@@ -1,7 +1,7 @@
-export { CharacterLayer };
-import { CanvasLayer } from "../layer.js";
-import { characterMaster } from "../characterMaster.js";
-class CharacterLayer extends CanvasLayer {
+export { BasicCharacterLayer };
+import { Layer } from "../layer.js";
+import { characterMaster } from "./characterMaster.js";
+class BasicCharacterLayer extends Layer {
     constructor() {
         super();
         this.characters = [];
@@ -25,26 +25,24 @@ class CharacterLayer extends CanvasLayer {
         }
         return false;
     }
-    refresh() {
+    changeAllCharacters() {
         this.characters = [];
         const specs = (arr, num) => {
             const copyArr = arr.slice();
             const l = arr.length;
-            // randamize
             for (let i = 0; i < l; i++) {
                 const j = Math.floor(Math.random() * l);
                 const tmp = copyArr[i];
                 copyArr[i] = copyArr[j];
                 copyArr[j] = tmp;
             }
-            // num of records to return (if not specified, all records are returned)
             if (num === undefined) {
                 num = l;
             }
             return copyArr.slice(0, num);
         };
         for (let spec of specs(characterMaster, 5)) {
-            this.characters.push(new Character(this.canvas, spec));
+            this.characters.push(new CharacterBuilder().setCanvas(this.canvas).setMaster(spec).build());
         }
     }
     resize(width, height) {
@@ -61,55 +59,93 @@ class CharacterLayer extends CanvasLayer {
         }
     }
 }
-class Character {
-    constructor(canvas, master) {
+class CharacterBuilder {
+    constructor() {
+    }
+    setCanvas(canvas) {
         this.canvas = canvas;
+        return this;
+    }
+    setMaster(master) {
+        this.master = master;
+        return this;
+    }
+    build() {
+        const id = this.master.id;
+        const name = this.master.name;
+        const type = this.master.type;
+        const character = new Character(this.canvas, name);
+        character.currentAction = new CharacterMovement(character);
+        character.image.src = `img/main/img${("00" + id).slice(-3)}.png`;
+        character.sound = new Audio(`audio/main/${type}.mp3`);
+        character.movementAction = (character) => {
+            return new CharacterMovement(character);
+        };
+        character.currentAction = character.movementAction(character);
+        if (id === "14") {
+            character.onClickAction = (character) => {
+                const action = new CharacterActionJumping(character);
+                action.times = 2;
+                return action;
+            };
+        }
+        else if (id === "43") {
+            character.onClickAction = (character) => {
+                const action = new CharacterActionShaking(character);
+                action.times = 2;
+                return action;
+            };
+        }
+        else if (id === "44") {
+            character.onClickAction = (character) => {
+                return new CharacterActionPuffing2(character);
+            };
+        }
+        else if (type === "shinkansen") {
+            character.onClickAction = (character) => {
+                return new CharacterActionRevolving(character);
+            };
+        }
+        else if (type === "cat") {
+            character.onClickAction = (character) => {
+                return new CharacterActionShaking(character);
+            };
+        }
+        else if (type === "locomotive") {
+            character.onClickAction = (character) => {
+                return new CharacterActionPuffing1(character);
+            };
+        }
+        else {
+            character.onClickAction = (character) => {
+                return new CharacterActionJumping(character);
+            };
+        }
+        return character;
+    }
+}
+class Character {
+    constructor(canvas, name) {
+        this.canvas = canvas;
+        this.name = name;
         this.width = 0;
         this.height = 0;
         this.x = 0;
         this.y = 0;
         this.image = new Image();
         this.nameVisible = false;
-        this.id = parseInt(master.id);
-        this.name = master.name;
-        this.action = new CharacterMovement(this);
         this.image.onload = () => {
             this.resize();
             this.x = (this.canvas.width - this.width) / 2;
             this.y = (this.canvas.height - this.width) / 2;
         };
-        this.image.src = `img/main/img${("00" + master.id).slice(-3)}.png`;
-        this.sound = new Audio(`audio/main/${master.type}.mp3`);
-        if (this.id === 14) {
-            this.characterActionOnClickFactory = new CharacterActionJumpingFactory(this);
-            this.characterActionOnClickFactory.times = 2;
-        }
-        else if (this.id === 43) {
-            this.characterActionOnClickFactory = new CharacterActionShakingFactory(this);
-            this.characterActionOnClickFactory.times = 2;
-        }
-        else if (this.id === 44) {
-            this.characterActionOnClickFactory = new CharacterActionPuffingFactory2(this);
-        }
-        else if (master.type === "shinkansen") {
-            this.characterActionOnClickFactory = new CharacterActionRevolvingFactory(this);
-        }
-        else if (master.type === "cat") {
-            this.characterActionOnClickFactory = new CharacterActionShakingFactory(this);
-        }
-        else if (master.type === "locomotive") {
-            this.characterActionOnClickFactory = new CharacterActionPuffingFactory1(this);
-        }
-        else {
-            this.characterActionOnClickFactory = new CharacterActionJumpingFactory(this);
-        }
     }
     onClick(x, y) {
         if (x > this.x &&
             x < this.x + this.width &&
             y > this.y &&
             y < this.y + this.height) {
-            this.action = this.characterActionOnClickFactory.create();
+            this.currentAction = this.onClickAction(this);
             return true;
         }
         else {
@@ -121,7 +157,7 @@ class Character {
         this.height = Math.floor(this.image.height * (this.width / this.image.width));
     }
     update(milliseconds) {
-        this.action.update(milliseconds);
+        this.currentAction.update(milliseconds);
         if (this.nameVisible === true) {
             const context = this.canvas.getContext("2d");
             context.font = Math.floor(this.width / 8) + "px sans-serif";
@@ -218,7 +254,7 @@ class CharacterActionJumping {
         }
         else {
             this.character.y = this.startY;
-            this.character.action = new CharacterMovement(this.character);
+            this.character.currentAction = this.character.movementAction(this.character);
         }
         const context = this.character.canvas.getContext("2d");
         context.drawImage(this.character.image, this.character.x, this.character.y, this.character.width, this.character.height);
@@ -250,7 +286,7 @@ class CharacterActionRevolving {
         }
         else {
             context.drawImage(this.character.image, this.character.x, this.character.y, this.character.width, this.character.height);
-            this.character.action = new CharacterMovement(this.character);
+            this.character.currentAction = this.character.movementAction(this.character);
         }
     }
 }
@@ -280,7 +316,7 @@ class CharacterActionShaking {
         }
         else {
             context.drawImage(this.character.image, this.character.x, this.character.y, this.character.width, this.character.height);
-            this.character.action = new CharacterMovement(this.character);
+            this.character.currentAction = this.character.movementAction(this.character);
         }
     }
 }
@@ -319,7 +355,7 @@ class CharacterActionPuffing1 {
         }
         else {
             context.drawImage(this.character.image, this.character.x, this.character.y, this.character.width, this.character.height);
-            this.character.action = new CharacterMovement(this.character);
+            this.character.currentAction = this.character.movementAction(this.character);
         }
     }
 }
@@ -359,67 +395,7 @@ class CharacterActionPuffing2 {
         }
         else {
             context.drawImage(this.character.image, this.character.x, this.character.y, this.character.width, this.character.height);
-            this.character.action = new CharacterMovement(this.character);
+            this.character.currentAction = this.character.movementAction(this.character);
         }
-    }
-}
-class CharacterActionJumpingFactory {
-    constructor(character) {
-        this.character = character;
-    }
-    create() {
-        const action = new CharacterActionJumping(this.character);
-        if (this.times != undefined) {
-            action.times = this.times;
-        }
-        return action;
-    }
-}
-class CharacterActionRevolvingFactory {
-    constructor(character) {
-        this.character = character;
-    }
-    create() {
-        const action = new CharacterActionRevolving(this.character);
-        if (this.times != undefined) {
-            action.times = this.times;
-        }
-        return action;
-    }
-}
-class CharacterActionShakingFactory {
-    constructor(character) {
-        this.character = character;
-    }
-    create() {
-        const action = new CharacterActionShaking(this.character);
-        if (this.times != undefined) {
-            action.times = this.times;
-        }
-        return action;
-    }
-}
-class CharacterActionPuffingFactory1 {
-    constructor(character) {
-        this.character = character;
-    }
-    create() {
-        const action = new CharacterActionPuffing1(this.character);
-        if (this.times != undefined) {
-            action.times = this.times;
-        }
-        return action;
-    }
-}
-class CharacterActionPuffingFactory2 {
-    constructor(character) {
-        this.character = character;
-    }
-    create() {
-        const action = new CharacterActionPuffing2(this.character);
-        if (this.times != undefined) {
-            action.times = this.times;
-        }
-        return action;
     }
 }

@@ -1,10 +1,6 @@
-import { CanvasLayer } from "../layer.js";
+import { Layer } from "../layer.js";
 import * as sceneryMaster from "../scenery/sceneryMaster.js";
-/**
- * Scenery Selection Layer
- * シーナリー選択レイヤー
- */
-export class ScenerySelectionLayer extends CanvasLayer {
+export class ScenerySelectionLayer extends Layer {
     constructor(observer) {
         super();
         this.observer = observer;

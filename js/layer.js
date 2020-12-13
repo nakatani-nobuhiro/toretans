@@ -1,5 +1,5 @@
-export { CanvasLayer };
-class CanvasLayer {
+export { Layer };
+class Layer {
     constructor() {
         this.canvas = document.createElement("canvas");
         this.canvas.style.position = "absolute";

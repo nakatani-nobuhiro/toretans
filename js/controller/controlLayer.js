@@ -1,9 +1,5 @@
-import { CanvasLayer } from "../layer.js";
-/**
- * Control Panel Layer Class
- * コントロール・パネル・レイヤー
- */
-export class ControlPanelLayer extends CanvasLayer {
+import { Layer } from "../layer.js";
+export class ControlPanelLayer extends Layer {
     constructor() {
         super();
         this.characterChangingButton = new CharacterChangingButton(this.canvas);
@@ -17,8 +13,6 @@ export class ControlPanelLayer extends CanvasLayer {
     resize(width, height) {
         super.resize(width, height);
         const iconsize = Math.floor(Math.min(height / 10, width / 5));
-        // Draw the base of the control panel
-        // コントロール・パネルの背景描画
         const context = this.canvas.getContext("2d");
         const dpr = window.devicePixelRatio;
         const r = 10 * dpr;
@@ -31,8 +25,6 @@ export class ControlPanelLayer extends CanvasLayer {
         context.lineTo(0, this.canvas.height);
         context.closePath();
         context.fill();
-        // Put the icons
-        // アイコンの設置
         this.icons.forEach((icon, i) => {
             icon.x = (this.canvas.width - this.icons.length * iconsize) / 2 + iconsize * i;
             icon.y = this.canvas.height - iconsize;
@@ -51,10 +43,6 @@ export class ControlPanelLayer extends CanvasLayer {
     update(milliseconds) {
     }
 }
-/**
- * Abstract Class of Control Button
- * コントロール・ボタンの抽象クラス
- */
 class ControlButton {
     constructor(canvas) {
         this.canvas = canvas;
@@ -92,10 +80,6 @@ class ControlButton {
         }
     }
 }
-/**
- * Character Changing Button Class
- * キャラクター入替ボタン・クラス
- */
 class CharacterChangingButton extends ControlButton {
     constructor(canvas) {
         super(canvas);
@@ -104,10 +88,6 @@ class CharacterChangingButton extends ControlButton {
         this.image.src = "img/control/icon-refresh.svg";
     }
 }
-/**
- * Character Name Button Class
- * キャラクター名ボタン・クラス
- */
 class CharacterNameButton extends ControlButton {
     constructor(canvas) {
         super(canvas);
@@ -115,10 +95,6 @@ class CharacterNameButton extends ControlButton {
         this.image.src = "img/control/icon-tag.svg";
     }
 }
-/**
- * Scenery Selection Button Class
- * シーナリー選択ボタン・クラス
- */
 class ScenerySelectionButton extends ControlButton {
     constructor(canvas) {
         super(canvas);

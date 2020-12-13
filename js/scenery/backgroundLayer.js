@@ -1,21 +1,12 @@
-import { CanvasLayer } from "../layer.js";
-/**
- * Basic Background Layer Class
- * Simple blue screen.
- **/
-export class BasicBackgroundLayer extends CanvasLayer {
+import { Layer } from "../layer.js";
+export class BasicBackgroundLayer extends Layer {
     constructor() {
         super();
-        this.canvas.style.backgroundColor = "#66ccff";
     }
     update(milliseconds) {
     }
 }
-/**
- * Falloing Objects Background Layer Abstract Class
- * Abstract class for the background falling something.
- **/
-class FallingObjectsBackgroundLayer extends CanvasLayer {
+class FallingObjectsBackgroundLayer extends Layer {
     constructor() {
         super(...arguments);
         this.objects = [];
@@ -45,15 +36,15 @@ export class SnowingBackgroundLayer extends FallingObjectsBackgroundLayer {
             const type = Math.ceil(Math.random() * 3);
             const subType = Math.ceil(Math.random() * 3);
             switch (Math.floor(Math.random() * 4)) {
-                case 0: // near
+                case 0:
                     size = 16 * dpr;
                     speed = 0.03;
                     break;
-                case 1: // mid
+                case 1:
                     size = 12 * dpr;
                     speed = 0.025;
                     break;
-                default: // far
+                default:
                     size = 8 * dpr;
                     speed = 0.02;
                     break;
@@ -66,7 +57,6 @@ export class SnowingBackgroundLayer extends FallingObjectsBackgroundLayer {
             object.x = (canvas.width - size) * Math.random();
             object.y = object.dy * -1000;
             object.dAngle = (Math.random() - 0.5) * Math.PI / 1000;
-            // rare item
             if (Math.random() < 0.001) {
                 object.img.src = "img/background/star.png";
                 object.width = 16 * dpr;
@@ -90,17 +80,17 @@ export class SpringBackgroundLayer extends FallingObjectsBackgroundLayer {
             const type = Math.ceil(Math.random() * 3);
             let subType;
             switch (Math.floor(Math.random() * 4)) {
-                case 0: // near
+                case 0:
                     subType = "1";
                     size = 16 * dpr;
                     speed = 0.06;
                     break;
-                case 1: // mid
+                case 1:
                     subType = "2";
                     size = 12 * dpr;
                     speed = 0.05;
                     break;
-                default: // far
+                default:
                     subType = "3";
                     size = 8 * dpr;
                     speed = 0.04;
@@ -121,7 +111,6 @@ export class SpringBackgroundLayer extends FallingObjectsBackgroundLayer {
                 object.y = initPosition - canvas.width;
             }
             object.dAngle = (Math.random() - 0.5) * Math.PI / 1000;
-            // rare item
             if (Math.random() < 0.001) {
                 object.img.src = "img/background/star.png";
                 object.width = 16 * dpr;
@@ -145,17 +134,17 @@ export class RainBackgroundLayer extends FallingObjectsBackgroundLayer {
             const type = "1";
             let subType;
             switch (Math.floor(Math.random() * 3)) {
-                case 0: // far
+                case 0:
                     subType = "1";
                     size = 12 * dpr;
                     speed = 0.2;
                     break;
-                case 1: // mid
+                case 1:
                     subType = "2";
                     size = 18 * dpr;
                     speed = 0.3;
                     break;
-                default: // near
+                default:
                     subType = "3";
                     size = 24 * dpr;
                     speed = 0.4;
@@ -167,7 +156,6 @@ export class RainBackgroundLayer extends FallingObjectsBackgroundLayer {
             object.img.src = `img/background/rain/raindrop${type}_${subType}.svg`;
             object.x = (canvas.width - size) * Math.random();
             object.y = object.dy * -1000;
-            // rare item
             if (Math.random() < 0.001) {
                 object.img.src = "img/background/star.png";
                 object.width = 24 * dpr;
@@ -192,17 +180,17 @@ export class FallingLeavesBackgroundLayer extends FallingObjectsBackgroundLayer 
             const type = Math.ceil(Math.random() * 3);
             let subType;
             switch (Math.floor(Math.random() * 4)) {
-                case 0: // near
+                case 0:
                     subType = "1";
                     size = 32 * dpr;
                     speed = 0.10;
                     break;
-                case 1: // mid
+                case 1:
                     subType = "2";
                     size = 26 * dpr;
                     speed = 0.08;
                     break;
-                default: // far
+                default:
                     subType = "3";
                     size = 20 * dpr;
                     speed = 0.06;
@@ -223,7 +211,6 @@ export class FallingLeavesBackgroundLayer extends FallingObjectsBackgroundLayer 
                 object.y = initPosition - canvas.width;
             }
             object.dAngle = (Math.random() - 0.5) * Math.PI / 1000;
-            // rare item
             if (Math.random() < 0.001) {
                 object.img.src = "img/background/star.png";
                 object.width = 32 * dpr;
@@ -301,7 +288,7 @@ class FallingObject {
         context.restore();
     }
 }
-export class WaveBackgroundLayer extends CanvasLayer {
+export class WaveBackgroundLayer extends Layer {
     constructor() {
         super();
         this.wave1 = new Wave(this.canvas, "rgba(40, 64, 198, 0.3)");
@@ -358,27 +345,60 @@ class Wave {
         return Math.sin(x * 2 * Math.PI / this.waveLength + this.startAngle) * this.amplitude + this.amplitude + this.waveTop;
     }
 }
-export class EveningBackgroundLayer extends CanvasLayer {
+export class StarryNightBackgroundLayer extends Layer {
     constructor() {
         super();
-        this.background1 = new Image();
-        this.background2 = new Image();
-        this.canvas.style.backgroundImage = "linear-gradient(#082343, #b7282e, #fe8246)";
-        this.background1.onload = () => {
-            this.resize(this.canvas.width, this.canvas.height);
-        };
-        this.background2.onload = () => {
-            this.resize(this.canvas.width, this.canvas.height);
-        };
-        this.background1.src = "img/background/evening/oga1.svg";
-        this.background2.src = "img/background/evening/oga2.svg";
+        this.stars = [];
     }
     resize(width, height) {
         super.resize(width, height);
-        const context = this.canvas.getContext("2d");
-        context.drawImage(this.background1, 0, height * 2 / 3, width, width);
-        context.drawImage(this.background2, 0, height * 2 / 3, width, width);
+        this.stars = [];
+        for (let i = 0; i < 20; i++) {
+            const star = new Star(this.canvas);
+            const size = Math.floor((width + height) / 100) * (0.8 + Math.random() * 0.2);
+            star.width = size;
+            star.height = size;
+            star.x = Math.floor(width * Math.random());
+            star.y = Math.floor(height * Math.random());
+            this.stars.push(star);
+        }
     }
     update(milliseconds) {
+        const context = this.canvas.getContext("2d");
+        context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        for (const star of this.stars) {
+            star.update(milliseconds);
+        }
+    }
+}
+class Star {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.x = 0;
+        this.y = 0;
+        this.width = 0;
+        this.height = 0;
+        this.img = new Image();
+        this.twinklingCycle = (3 + Math.random()) * 1000;
+        this.timeline = this.twinklingCycle * Math.random();
+        this.magnitude = Math.random() * 0.5 + 0.5;
+        this.angle = Math.random() * Math.PI * 2;
+        this.dAngle = (Math.random() - 0.5) / 1000;
+        this.img.src = "img/background/starrynight/star.png";
+    }
+    update(milliseconds) {
+        this.timeline += milliseconds;
+        if (this.timeline > this.twinklingCycle) {
+            this.timeline -= this.twinklingCycle;
+        }
+        this.angle += this.dAngle * milliseconds;
+        const alpha = (Math.sin(this.timeline / this.twinklingCycle * Math.PI * 2) + 1) / 2 * this.magnitude;
+        const context = this.canvas.getContext("2d");
+        context.save();
+        context.translate(this.x + this.width / 2, this.y + this.height / 2);
+        context.rotate(this.angle);
+        context.globalAlpha = alpha;
+        context.drawImage(this.img, this.width / -2, this.height / -2, this.width, this.height);
+        context.restore();
     }
 }
