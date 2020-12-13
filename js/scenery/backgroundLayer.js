@@ -355,7 +355,7 @@ export class StarryNightBackgroundLayer extends Layer {
         this.stars = [];
         for (let i = 0; i < 20; i++) {
             const star = new Star(this.canvas);
-            const size = Math.floor((width + height) / 100) * (0.8 + Math.random() * 0.2);
+            const size = Math.floor((width + height) / 50) * (0.8 + Math.random() * 0.2);
             star.width = size;
             star.height = size;
             star.x = Math.floor(width * Math.random());
