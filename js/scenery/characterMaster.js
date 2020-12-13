@@ -47,5 +47,6 @@ export const characterMaster = [
     { "id": "46", "name": "E261 サフィールちゃん", "color": "#006787", "type": "commuter" },
     { "id": "47", "name": "E956 アルファXマン", "color": "#2f4663", "type": "shinkansen" },
     { "id": "48", "name": "E257 おどりこちゃん", "color": "#1c96d2", "type": "express" },
-    { "id": "49", "name": "E231 むさしのくん", "color": "#e36028", "type": "commuter" }
+    { "id": "49", "name": "E231 むさしのくん", "color": "#e36028", "type": "commuter" },
+    { "id": "50", "name": "E235 よこすかそうぶさん", "color": "#036eb7", "type": "commuter" }
 ];
