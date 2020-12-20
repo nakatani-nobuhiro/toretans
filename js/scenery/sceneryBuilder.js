@@ -1,6 +1,7 @@
 import { BasicCharacterLayer } from "./characterLayer.js";
 import { Scenery } from "./scenery.js";
-import * as Background from "./backgroundLayer.js";
+import * as Background from "./background/backgroundLayer.js";
+import { ObservationWheelBackgroundLayer } from "./background/observationWheel.js";
 export class DefaultSceneryBuilder {
     constructor() { }
     build() {
@@ -110,6 +111,17 @@ export class StarryNightSceneryBuilder {
     build() {
         const scenery = new Scenery();
         const background = new Background.StarryNightBackgroundLayer();
+        background.canvas.style.backgroundColor = "#003366";
+        scenery.addLayer(background);
+        scenery.addLayer(new BasicCharacterLayer());
+        return scenery;
+    }
+}
+export class ObservationWheelSceneryBuilder {
+    constructor() { }
+    build() {
+        const scenery = new Scenery();
+        const background = new ObservationWheelBackgroundLayer();
         background.canvas.style.backgroundColor = "#003366";
         scenery.addLayer(background);
         scenery.addLayer(new BasicCharacterLayer());

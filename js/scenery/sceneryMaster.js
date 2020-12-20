@@ -7,5 +7,6 @@ export const sceneryMaster = [
     { "iconImageSrc": "img/sceneryIcon/moon.png", "builder": new sceneryBuilder.MoonnightSceneryBuilder() },
     { "iconImageSrc": "img/sceneryIcon/fallingLeaves.png", "builder": new sceneryBuilder.FallingLeavesSceneryBuilder() },
     { "iconImageSrc": "img/sceneryIcon/starryNight.png", "builder": new sceneryBuilder.StarryNightSceneryBuilder() },
-    { "iconImageSrc": "img/sceneryIcon/snow.png", "builder": new sceneryBuilder.SnowSceneryBuilder() }
+    { "iconImageSrc": "img/sceneryIcon/snow.png", "builder": new sceneryBuilder.SnowSceneryBuilder() },
+    { "iconImageSrc": "img/sceneryIcon/observationWheel.png", "builder": new sceneryBuilder.ObservationWheelSceneryBuilder() }
 ];
