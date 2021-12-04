@@ -48,11 +48,11 @@ export const characterMaster = [
     { "id": "47", "name": "E956 アルファXマン", "color": "#2f4663", "type": "shinkansen" },
     { "id": "48", "name": "E257 おどりこちゃん", "color": "#1c96d2", "type": "express" },
     { "id": "49", "name": "E231 むさしのくん", "color": "#e36028", "type": "commuter" },
-    { "id": "50", "name": "E235 よこすかそうぶさん", "color": "#036eb7", "type": "commuter" }
-    { "id": "51", "name": "GV-E400 あきたさん", "color": "#2d72b8", "type": "commuter" }
-    { "id": "52", "name": "GV-E400 にいがたさん", "color": "#e3007f", "type": "commuter" }
-    { "id": "53", "name": "E257 しょうなんさん", "color": "#1c96d2", "type": "express" }
-    { "id": "54", "name": "E131 ぼうそうさんきょうだい うちぼー", "color": "#fcce00", "type": "commuter" }
-    { "id": "55", "name": "E131 ぼうそうさんきょうだい そとぼー", "color": "#fcce00", "type": "commuter" }
+    { "id": "50", "name": "E235 よこすかそうぶさん", "color": "#036eb7", "type": "commuter" },
+    { "id": "51", "name": "GV-E400 あきたさん", "color": "#2d72b8", "type": "commuter" },
+    { "id": "52", "name": "GV-E400 にいがたさん", "color": "#e3007f", "type": "commuter" },
+    { "id": "53", "name": "E257 しょうなんさん", "color": "#1c96d2", "type": "express" },
+    { "id": "54", "name": "E131 ぼうそうさんきょうだい うちぼー", "color": "#fcce00", "type": "commuter" },
+    { "id": "55", "name": "E131 ぼうそうさんきょうだい そとぼー", "color": "#fcce00", "type": "commuter" },
     { "id": "56", "name": "E131 ぼうそうさんきょうだい かしま", "color": "#fcce00", "type": "commuter" }
 ];
